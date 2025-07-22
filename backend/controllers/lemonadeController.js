@@ -1,34 +1,29 @@
-// Статический массив с данными для заглушки
-const testLemonades = [
-  {
-    id: 1,
-    name: "Апельсин-Облепиха",
-    ingredients: "Апельсин, облепиха, сахарный сироп, содовая, лед, мята",
-    price: 250,
-    volume: 200,
-  },
-  {
-    id: 2,
-    name: "Киви-Тархун",
-    ingredients: "Киви, сироп тархун, сахарный сироп, клубника, содовая, лед",
-    price: 250,
-    volume: 200,
-  },
-];
+const Lemonade = require('../models/lemonade.model'); // Импортируем модель
 
-// Функция-контроллер для получения списка лимонадов
-const getLemonades = (req, res) => {
+// Контроллер для получения всех лимонадов
+const getAllLemonades = async (req, res) => {
   try {
-    // Отправляем статический массив в качестве JSON-ответа
-    res.status(200).json(testLemonades);
+    // Используем метод findAll из модели для получения данных из БД
+    const lemonades = await Lemonade.findAll();
+    res.status(200).json(lemonades);
   } catch (error) {
-    // В случае ошибки отправляем статус 500 (Server Error)
-    res.status(500).json({ message: "Не удалось получить список лимонадов" });
-    console.error(error);
+    console.error('Ошибка при получении лимонадов:', error);
+    res.status(500).json({ message: 'Ошибка на сервере' });
   }
 };
 
-// Экспортируем функцию, чтобы ее можно было использовать в роутах
+// Контроллер для создания нового лимонада
+const createLemonade = async (req, res) => {
+  try {
+    const newLemonade = await Lemonade.create(req.body);
+    res.status(201).json(newLemonade);
+  } catch (error) {
+    console.error('Ошибка при создании лимонада:', error);
+    res.status(500).json({ message: 'Ошибка на сервере' });
+  }
+};
+
 module.exports = {
-  getLemonades,
+  getAllLemonades,
+  createLemonade,
 };
